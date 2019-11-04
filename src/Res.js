@@ -17,6 +17,7 @@ var imagenes = {
     bloque_tierra_combinada_2: "res/imagenTierraCombinada_2.png",
     bloque_tierra_combinada_3: "res/imagenTierraCombinada_3.png",
     disparo_jugador: "res/cannonBall.png",
+    disparo_enemigo: "res/bala.png",
     jugador: "res/jugador.png",
     jugador_moviendo_abajo: "res/jugador_moviendo_abajo.png",
     jugador_moviendo_arriba:"res/jugador_moviendo_arriba.png",
@@ -25,6 +26,7 @@ var imagenes = {
     pad :"res/pad.png",
     icono_puntos : "res/icono_puntos.png",
     icono_recolectable : "res/icono_recolectable.png",
+    tile_destruible : "res/bomba.png",
 };
 
 

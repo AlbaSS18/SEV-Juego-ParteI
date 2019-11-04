@@ -7,6 +7,11 @@ class Enemigo extends Modelo {
         this.vy = 0;
         this.vx = -1;
 
+        // Disparo
+        this.cadenciaDisparo = 80;
+        this.tiempoDisparo = 0;
+
+        // Animaciones
         this.aMover = new Animacion(imagenes.enemigo_movimiento,
             this.ancho, this.alto, 6, 3);
         this.aMorir = new Animacion(imagenes.enemigo_morir,
@@ -42,6 +47,29 @@ class Enemigo extends Modelo {
             if ( this.vx == 0){
                 this.vx = -1;
             }
+        }
+
+        // Tiempo Disparo
+        if ( this.tiempoDisparo > 0 ) {
+            this.tiempoDisparo--;
+        }
+    }
+
+    disparar(){
+        if ( this.tiempoDisparo == 0) {
+            // reiniciar Cadencia
+            this.estado = estados.disparando;
+            this.tiempoDisparo = this.cadenciaDisparo;
+            var disparos = [];
+
+            var disparoDerecha = new DisparoEnemigoDerecha(this.x, this.y);
+            disparos.push(disparoDerecha);
+            var disparoIzquierda = new DisparoEnemigoIzquierda(this.x, this.y);
+            disparos.push(disparoIzquierda);
+            console.log(disparos);
+            return disparos;
+        } else {
+            return null;
         }
     }
 

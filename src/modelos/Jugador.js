@@ -3,6 +3,7 @@ class Jugador extends Modelo {
     constructor(x, y) {
         super(imagenes.jugador , x, y);
         this.vidas = 3;
+        this.tiempoInvulnerable = 0;
         this.vx = 0; // velocidadX
         this.vy = 0; // velocidadY
         this.estado = estados.moviendo;
@@ -29,6 +30,10 @@ class Jugador extends Modelo {
     }
 
     actualizar(){
+
+        if (this.tiempoInvulnerable > 0 ){
+            this.tiempoInvulnerable --;
+        }
 
         this.animacion.actualizar();
 
@@ -129,7 +134,6 @@ class Jugador extends Modelo {
             }
             disparos.push(disparoDerecha);
 
-            console.log(disparos);
             return disparos;
         } else {
             return null;
@@ -138,13 +142,23 @@ class Jugador extends Modelo {
 
     dibujar (scrollX){
         scrollX = scrollX || 0;
-        this.animacion.dibujar(this.x - scrollX, this.y);
+        if ( this.tiempoInvulnerable > 0) {
+            contexto.globalAlpha = 0.5;
+            this.animacion.dibujar(this.x - scrollX, this.y);
+            contexto.globalAlpha = 1;
+        } else {
+            this.animacion.dibujar(this.x - scrollX, this.y);
+        }
 
     }
 
     golpeado (){
-        if (this.vidas > 0) {
-            this.vidas--;
+        if (this.tiempoInvulnerable <= 0) {
+            if (this.vidas > 0) {
+                this.vidas--;
+                this.tiempoInvulnerable = 100;
+                // 100 actualizaciones de loop
+            }
         }
     }
 

@@ -19,9 +19,11 @@ class GameLayer extends Layer {
 
         this.fondo = new Fondo(imagenes.fondo_3,480*0.5,320*0.5);
 
-        this.disparosJugador = []
+        this.disparosJugador = [];
+        this.disparosEnemigo = []
         this.enemigos = [];
         this.bloques = [];
+        this.tilesDestruiblesDisparo = [];
 
 
         this.fondoPuntos =
@@ -45,6 +47,20 @@ class GameLayer extends Layer {
 
         this.fondo.vx = -1;
         this.fondo.actualizar();
+
+        // Crear los disparos del enemigo
+        for(var i=0; i < this.enemigos.length; i++){
+            var disparos = this.enemigos[i].disparar();
+            if(disparos != null){
+                for(var i=0; i<2; i++){
+                    var nuevoDisparo = disparos[i];
+                    if ( nuevoDisparo != null ) {
+                        this.espacio.agregarCuerpoDinamico(nuevoDisparo);
+                        this.disparosEnemigo.push(nuevoDisparo);
+                    }
+                }
+            }
+        }
 
         console.log("disparosJugador: "+this.disparosJugador.length);
         // Eliminar disparos fuera de pantalla
@@ -124,6 +140,78 @@ class GameLayer extends Layer {
             }
         }
 
+        // colisiones , disparoEnemigo - bloque
+        for (var i=0; i < this.disparosEnemigo.length; i++){
+            for (var j=0; j < this.bloques.length; j++){
+                if (this.disparosEnemigo[i] != null &&
+                    this.bloques[j] != null &&
+                    this.disparosEnemigo[i].colisiona(this.bloques[j])) {
+
+                    this.espacio
+                        .eliminarCuerpoDinamico(this.disparosEnemigo[i]);
+                    this.disparosEnemigo.splice(i, 1);
+                    i = i-1;
+                }
+            }
+        }
+
+        //colisiones, jugador - enemigo
+        for (var i=0; i < this.enemigos.length; i++){
+            if ( this.jugador.colisiona(this.enemigos[i])){
+                this.jugador.golpeado();
+                if (this.jugador.vidas <= 0){
+                    this.iniciar();
+                }
+            }
+        }
+
+        // colisiones , disparoJugador - tileDestruibleDisparo
+        for (var i=0; i < this.disparosJugador.length; i++){
+            for (var j=0; j < this.tilesDestruiblesDisparo.length; j++){
+                if (this.disparosJugador[i] != null &&
+                    this.tilesDestruiblesDisparo[j] != null &&
+                    this.disparosJugador[i].colisiona(this.tilesDestruiblesDisparo[j])) {
+
+                    this.espacio
+                        .eliminarCuerpoDinamico(this.disparosJugador[i]);
+                    this.disparosJugador.splice(i, 1);
+                    i = i-1;
+                    this.espacio
+                        .eliminarCuerpoEstatico(this.tilesDestruiblesDisparo[j]);
+                    this.tilesDestruiblesDisparo.splice(j, 1);
+                    j = j-1;
+                }
+            }
+        }
+
+        // colisiones , jugador - tileDestruibleDisparo
+        for (var i=0; i < this.tilesDestruiblesDisparo.length; i++){
+            if ( this.jugador.colisiona(this.enemigos[i])){
+                this.espacio
+                    .eliminarCuerpoEstatico(this.tilesDestruiblesDisparo[i]);
+                this.tilesDestruiblesDisparo.splice(i, 1);
+                i = i-1;
+                this.jugador.golpeado();
+                if (this.jugador.vidas <= 0){
+                    this.iniciar();
+                }
+            }
+        }
+
+        // colisiones , jugador - disparoEnemigo
+        for (var i=0; i < this.disparosEnemigo.length; i++){
+            if ( this.jugador.colisiona(this.disparosEnemigo[i])){
+                this.espacio
+                    .eliminarCuerpoEstatico(this.disparosEnemigo[i]);
+                this.disparosEnemigo.splice(i, 1);
+                i = i-1;
+                this.jugador.golpeado();
+                if (this.jugador.vidas <= 0){
+                    this.iniciar();
+                }
+            }
+        }
+
     }
 
     calcularScroll(){
@@ -157,9 +245,17 @@ class GameLayer extends Layer {
             this.disparosJugador[i].dibujar(this.scrollX);
         }
 
+        for (var i=0; i < this.disparosEnemigo.length; i++) {
+            this.disparosEnemigo[i].dibujar(this.scrollX);
+        }
+
         this.jugador.dibujar(this.scrollX);
         for (var i=0; i < this.enemigos.length; i++){
             this.enemigos[i].dibujar(this.scrollX);
+        }
+
+        for (var i=0; i < this.tilesDestruiblesDisparo.length; i++){
+            this.tilesDestruiblesDisparo[i].dibujar(this.scrollX);
         }
 
 
@@ -188,7 +284,6 @@ class GameLayer extends Layer {
         // disparar
         if (  controles.disparo ){
             var disparos = this.jugador.disparar();
-            console.log(disparos);
             for(var i=0; i<disparos.length; i++){
                 var nuevoDisparo = disparos[i];
                 if ( nuevoDisparo != null ) {
@@ -270,6 +365,13 @@ class GameLayer extends Layer {
                 // modificación para empezar a contar desde el suelo
                 this.bloques.push(tierra);
                 this.espacio.agregarCuerpoEstatico(tierra);
+                break;
+            case "U":
+                var tileDestruible = new TilesDestruibles(imagenes.tile_destruible,x,y);
+                tileDestruible.y = tileDestruible.y - tileDestruible.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.tilesDestruiblesDisparo.push(tileDestruible);
+                this.espacio.agregarCuerpoEstatico(tileDestruible);
                 break;
             case "E":
                 var enemigo = new Enemigo(x,y);
