@@ -250,8 +250,8 @@ class GameLayer extends Layer {
                 this.bloques.push(tierra);
                 this.espacio.agregarCuerpoEstatico(tierra);
                 break;
-            case "$":
-                var tierra = new Bloque(imagenes.bloque_tierra_esquina_derecha, x,y);
+            case "6":
+                var tierra = new Bloque(imagenes.bloque_tierra_combinada, x,y);
                 tierra.y = tierra.y - tierra.alto/2;
                 // modificación para empezar a contar desde el suelo
                 this.bloques.push(tierra);
