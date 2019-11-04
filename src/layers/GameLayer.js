@@ -24,11 +24,23 @@ class GameLayer extends Layer {
         this.bloques = [];
 
 
+        this.fondoPuntos =
+            new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
+        this.fondoRecolectable =
+            new Fondo(imagenes.icono_recolectable, 480*0.65,320*0.06);
+        this.puntos = new Texto(0,480*0.9,320*0.07 );
+        this.puntosRecolectables = new Texto(0,480*0.7,320*0.07 );
+
         this.cargarMapa("res/"+nivelActual+".txt");
 
     }
 
     actualizar (){
+
+        if (this.pausa){
+            return;
+        }
+
         this.espacio.actualizar();
 
         this.fondo.vx = -1;
@@ -152,6 +164,10 @@ class GameLayer extends Layer {
 
 
         // HUD --> A partir de aquí son elementos de interfaz
+        this.fondoPuntos.dibujar();
+        this.puntos.dibujar();
+        this.fondoRecolectable.dibujar();
+        this.puntosRecolectables.dibujar();
         if ( !this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
             this.botonSalto.dibujar();

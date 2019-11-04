@@ -23,6 +23,8 @@ var imagenes = {
     jugador_moviendo_derecha:"res/jugador_moviendo_derecha.png",
     jugador_moviendo_izquierda:"res/jugador_moviendo_izquierda.png",
     pad :"res/pad.png",
+    icono_puntos : "res/icono_puntos.png",
+    icono_recolectable : "res/icono_recolectable.png",
 };
 
 
