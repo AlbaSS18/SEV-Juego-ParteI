@@ -14,6 +14,8 @@ var imagenes = {
     enemigo_morir : "res/animacion_muerte_enemigo.png",
     bloque_tierra : "res/bloque_tierra.png",
     bloque_tierra_combinada: "res/imageCombinada_reducida.png",
+    bloque_tierra_combinada_2: "res/imagenTierraCombinada_2.png",
+    bloque_tierra_combinada_3: "res/imagenTierraCombinada_3.png",
     disparo_jugador: "res/cannonBall.png",
     jugador: "res/jugador.png",
     jugador_moviendo_abajo: "res/jugador_moviendo_abajo.png",

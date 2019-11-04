@@ -257,6 +257,20 @@ class GameLayer extends Layer {
                 this.bloques.push(tierra);
                 this.espacio.agregarCuerpoEstatico(tierra);
                 break;
+            case "7":
+                var tierra = new Bloque(imagenes.bloque_tierra_combinada_2, x,y);
+                tierra.y = tierra.y - tierra.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.bloques.push(tierra);
+                this.espacio.agregarCuerpoEstatico(tierra);
+                break;
+            case "8":
+                var tierra = new Bloque(imagenes.bloque_tierra_combinada_3, x,y);
+                tierra.y = tierra.y - tierra.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.bloques.push(tierra);
+                this.espacio.agregarCuerpoEstatico(tierra);
+                break;
             case "E":
                 var enemigo = new Enemigo(x,y);
                 enemigo.y = enemigo.y - enemigo.alto/2;
