@@ -24,6 +24,7 @@ class GameLayer extends Layer {
         this.enemigos = [];
         this.bloques = [];
         this.tilesDestruiblesDisparo = [];
+        this.recolectable = [];
 
 
         this.fondoPuntos =
@@ -83,6 +84,10 @@ class GameLayer extends Layer {
             this.disparosJugador[i].actualizar();
         }
 
+        for (var i=0; i < this.recolectable.length; i++) {
+            this.recolectable[i].actualizar();
+        }
+
         // Enemigos muertos fuera del juego
         for (var j=0; j < this.enemigos.length; j++){
             if ( this.enemigos[j] != null &&
@@ -119,11 +124,30 @@ class GameLayer extends Layer {
                         .eliminarCuerpoDinamico(this.disparosJugador[i]);
                     this.disparosJugador.splice(i, 1);
                     i = i-1;
+                    var enemigo = this.enemigos[j];
                     this.enemigos[j].impactado();
+
+                    for(var x=0; x<3; x++) {
+                        var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
+                        this.espacio.agregarCuerpoDinamico(recolectables);
+                        this.recolectable.push(recolectables);
+                    }
                     this.puntos.valor++;
+
                 }
             }
         }
+
+        //colisiones, jugador - recolectable
+        for (var i=0; i < this.recolectable.length; i++){
+            if ( this.jugador.colisiona(this.recolectable[i])){
+                this.espacio.eliminarCuerpoDinamico(this.recolectable[i]);
+                this.recolectable.splice(i, 1);
+                i = i-1;
+                this.puntosRecolectables.valor++;
+            }
+        }
+
 
         // colisiones , disparoJugador - bloque
         for (var i=0; i < this.disparosJugador.length; i++){
@@ -214,6 +238,14 @@ class GameLayer extends Layer {
 
     }
 
+    crearRecolectables(){
+        for(var x=0; x<3; x++) {
+            var recolectables = new ItemRecolectable(this.enemigos[j].x*x,this.enemigos[j].y*x);
+            this.espacio.agregarCuerpoDinamico(recolectables);
+            this.recolectable.push(recolectables);
+        }
+    }
+
     calcularScroll(){
         // limite izquierda
         if ( this.jugador.x > 480 * 0.3) {
@@ -258,6 +290,10 @@ class GameLayer extends Layer {
             this.tilesDestruiblesDisparo[i].dibujar(this.scrollX);
         }
 
+        for (var i=0; i < this.recolectable.length; i++){
+            this.recolectable[i].dibujar(this.scrollX);
+        }
+
 
         // HUD --> A partir de aquí son elementos de interfaz
         this.fondoPuntos.dibujar();
@@ -284,11 +320,13 @@ class GameLayer extends Layer {
         // disparar
         if (  controles.disparo ){
             var disparos = this.jugador.disparar();
-            for(var i=0; i<disparos.length; i++){
-                var nuevoDisparo = disparos[i];
-                if ( nuevoDisparo != null ) {
-                    this.espacio.agregarCuerpoDinamico(nuevoDisparo);
-                    this.disparosJugador.push(nuevoDisparo);
+            if(disparos != null){
+                for(var i=0; i<disparos.length; i++){
+                    var nuevoDisparo = disparos[i];
+                    if ( nuevoDisparo != null ) {
+                        this.espacio.agregarCuerpoDinamico(nuevoDisparo);
+                        this.disparosJugador.push(nuevoDisparo);
+                    }
                 }
             }
         }

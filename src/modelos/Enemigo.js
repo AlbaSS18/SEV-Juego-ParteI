@@ -66,7 +66,6 @@ class Enemigo extends Modelo {
             disparos.push(disparoDerecha);
             var disparoIzquierda = new DisparoEnemigoIzquierda(this.x, this.y);
             disparos.push(disparoIzquierda);
-            console.log(disparos);
             return disparos;
         } else {
             return null;

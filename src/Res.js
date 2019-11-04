@@ -25,8 +25,9 @@ var imagenes = {
     jugador_moviendo_izquierda:"res/jugador_moviendo_izquierda.png",
     pad :"res/pad.png",
     icono_puntos : "res/icono_puntos.png",
-    icono_recolectable : "res/icono_recolectable.png",
+    icono_recolectable : "res/cofre.png",
     tile_destruible : "res/bomba.png",
+    recolectable : "res/animacion_cofre.png",
 };
 
 
