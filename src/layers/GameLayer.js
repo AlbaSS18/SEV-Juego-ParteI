@@ -26,14 +26,18 @@ class GameLayer extends Layer {
         this.tilesDestruiblesDisparo = [];
         this.recolectable = [];
         this.tilesVelocidad = [];
+        this.tilesVidas = [];
 
 
         this.fondoPuntos =
             new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
         this.fondoRecolectable =
             new Fondo(imagenes.icono_recolectable, 480*0.65,320*0.06);
+        this.fondoVida =
+            new Fondo(imagenes.tile_vida, 480*0.45,320*0.05);
         this.puntos = new Texto(0,480*0.9,320*0.07 );
         this.puntosRecolectables = new Texto(0,480*0.7,320*0.07 );
+        this.vida = new Texto(3,480*0.5,320*0.07 );
 
         this.cargarMapa("res/"+nivelActual+".txt");
 
@@ -108,6 +112,7 @@ class GameLayer extends Layer {
         for (var i=0; i < this.enemigos.length; i++){
             if ( this.jugador.colisiona(this.enemigos[i])){
                 this.jugador.golpeado();
+                this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
                     this.iniciar();
                 }
@@ -180,16 +185,6 @@ class GameLayer extends Layer {
             }
         }
 
-        //colisiones, jugador - enemigo
-        for (var i=0; i < this.enemigos.length; i++){
-            if ( this.jugador.colisiona(this.enemigos[i])){
-                this.jugador.golpeado();
-                if (this.jugador.vidas <= 0){
-                    this.iniciar();
-                }
-            }
-        }
-
         // colisiones , disparoJugador - tileDestruibleDisparo
         for (var i=0; i < this.disparosJugador.length; i++){
             for (var j=0; j < this.tilesDestruiblesDisparo.length; j++){
@@ -211,15 +206,39 @@ class GameLayer extends Layer {
 
         // colisiones , jugador - tileDestruibleDisparo
         for (var i=0; i < this.tilesDestruiblesDisparo.length; i++){
-            if ( this.jugador.colisiona(this.enemigos[i])){
+            if ( this.jugador.colisiona(this.tilesDestruiblesDisparo[i])){
                 this.espacio
-                    .eliminarCuerpoEstatico(this.tilesDestruiblesDisparo[i]);
+                    .eliminarCuerpoDinamico(this.tilesDestruiblesDisparo[i]);
                 this.tilesDestruiblesDisparo.splice(i, 1);
                 i = i-1;
                 this.jugador.golpeado();
+                this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
                     this.iniciar();
                 }
+            }
+        }
+
+        // colisiones , jugador - tileVelocidad
+        for (var i=0; i < this.tilesVelocidad.length; i++){
+            if ( this.jugador.colisiona(this.tilesVelocidad[i])){
+                this.espacio
+                    .eliminarCuerpoDinamico(this.tilesVelocidad[i]);
+                this.tilesVelocidad.splice(i, 1);
+                i = i-1;
+                this.jugador.mejorarVelocidad();
+            }
+        }
+
+        // colisiones , jugador - tileVida
+        for (var i=0; i < this.tilesVidas.length; i++){
+            if ( this.jugador.colisiona(this.tilesVidas[i])){
+                this.espacio
+                    .eliminarCuerpoDinamico(this.tilesVidas[i]);
+                this.tilesVidas.splice(i, 1);
+                i = i-1;
+                this.jugador.aumentarVida();
+                this.vida.valor = this.jugador.vidas;
             }
         }
 
@@ -231,6 +250,7 @@ class GameLayer extends Layer {
                 this.disparosEnemigo.splice(i, 1);
                 i = i-1;
                 this.jugador.golpeado();
+                this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
                     this.iniciar();
                 }
@@ -287,6 +307,10 @@ class GameLayer extends Layer {
             this.tilesVelocidad[i].dibujar(this.scrollX);
         }
 
+        for (var i=0; i < this.tilesVidas.length; i++){
+            this.tilesVidas[i].dibujar(this.scrollX);
+        }
+
         for (var i=0; i < this.recolectable.length; i++){
             this.recolectable[i].dibujar(this.scrollX);
         }
@@ -297,6 +321,8 @@ class GameLayer extends Layer {
         this.puntos.dibujar();
         this.fondoRecolectable.dibujar();
         this.puntosRecolectables.dibujar();
+        this.fondoVida.dibujar();
+        this.vida.dibujar();
         if ( !this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
             this.botonSalto.dibujar();
@@ -406,14 +432,21 @@ class GameLayer extends Layer {
                 tileDestruible.y = tileDestruible.y - tileDestruible.alto/2;
                 // modificación para empezar a contar desde el suelo
                 this.tilesDestruiblesDisparo.push(tileDestruible);
-                this.espacio.agregarCuerpoEstatico(tileDestruible);
+                this.espacio.agregarCuerpoDinamico(tileDestruible);
                 break;
             case "V":
                 var tileVelocidad = new TilesDestruibles(imagenes.tile_velocidad,x,y);
                 tileVelocidad.y = tileVelocidad.y - tileVelocidad.alto/2;
                 // modificación para empezar a contar desde el suelo
                 this.tilesVelocidad.push(tileVelocidad);
-                this.espacio.agregarCuerpoEstatico(tileVelocidad);
+                this.espacio.agregarCuerpoDinamico(tileVelocidad);
+                break;
+            case "S":
+                var tileVida = new TilesDestruibles(imagenes.tile_vida,x,y);
+                tileVida.y = tileVida.y - tileVida.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.tilesVidas.push(tileVida);
+                this.espacio.agregarCuerpoDinamico(tileVida);
                 break;
             case "E":
                 var enemigo = new Enemigo(x,y);

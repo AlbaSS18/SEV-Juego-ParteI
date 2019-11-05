@@ -4,6 +4,7 @@ class Jugador extends Modelo {
         super(imagenes.jugador , x, y);
         this.vidas = 3;
         this.tiempoInvulnerable = 0;
+        this.tiempoMejorVelocidad = 0;
         this.vx = 0; // velocidadX
         this.vy = 0; // velocidadY
         this.estado = estados.moviendo;
@@ -33,6 +34,10 @@ class Jugador extends Modelo {
 
         if (this.tiempoInvulnerable > 0 ){
             this.tiempoInvulnerable --;
+        }
+
+        if (this.tiempoMejorVelocidad > 0 ){
+            this.tiempoMejorVelocidad --;
         }
 
         this.animacion.actualizar();
@@ -160,6 +165,17 @@ class Jugador extends Modelo {
                 // 100 actualizaciones de loop
             }
         }
+    }
+
+    mejorarVelocidad(){
+        if(this.tiempoMejorVelocidad <= 0){
+            this.vx = this.vx * 2;
+            this.vy = this.vy * 2;
+        }
+    }
+
+    aumentarVida(){
+        this.vidas ++;
     }
 
 
