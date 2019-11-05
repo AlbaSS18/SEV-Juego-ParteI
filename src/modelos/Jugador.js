@@ -169,8 +169,7 @@ class Jugador extends Modelo {
 
     mejorarVelocidad(){
         if(this.tiempoMejorVelocidad <= 0){
-            this.vx = this.vx * 2;
-            this.vy = this.vy * 2;
+            this.tiempoMejorVelocidad = 100;
         }
     }
 

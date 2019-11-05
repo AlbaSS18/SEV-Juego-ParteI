@@ -227,6 +227,8 @@ class GameLayer extends Layer {
                 this.tilesVelocidad.splice(i, 1);
                 i = i-1;
                 this.jugador.mejorarVelocidad();
+                console.log(this.jugador.vx);
+                console.log(this.jugador.vy);
             }
         }
 
@@ -356,23 +358,40 @@ class GameLayer extends Layer {
 
         // Eje X
         if ( controles.moverX > 0 ){
-            this.jugador.moverX(1);
-
+            this.cambiarVelocidadX(4,1);
         }else if ( controles.moverX < 0){
-            this.jugador.moverX(-1);
+            this.cambiarVelocidadX(-4,-1);
         } else {
-            this.jugador.moverX(0);
+            this.cambiarVelocidadX(0,0);
         }
 
         // Eje Y
         if ( controles.moverY > 0 ){
-            this.jugador.moverY( 1);
+            this.cambiarVelocidadY(4,1);
         } else if ( controles.moverY < 0 ){
-            this.jugador.moverY( -1);
+            this.cambiarVelocidadY(-4,-1);
         } else {
-            this.jugador.moverY( 0);
+            this.cambiarVelocidadY(0,0);
         }
 
+    }
+
+    cambiarVelocidadX(direccionVelocidad, direccionNormal){
+        if(this.jugador.tiempoMejorVelocidad > 0){
+            this.jugador.moverX(direccionVelocidad);
+        }
+        else{
+            this.jugador.moverX(direccionNormal);
+        }
+    }
+
+    cambiarVelocidadY(direccionVelocidad, direccionNormal){
+        if(this.jugador.tiempoMejorVelocidad > 0){
+            this.jugador.moverY(direccionVelocidad);
+        }
+        else{
+            this.jugador.moverY(direccionNormal);
+        }
     }
 
     cargarMapa(ruta){
