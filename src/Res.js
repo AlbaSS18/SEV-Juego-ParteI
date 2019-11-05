@@ -27,6 +27,7 @@ var imagenes = {
     icono_puntos : "res/icono_puntos.png",
     icono_recolectable : "res/cofre.png",
     tile_destruible : "res/bomba.png",
+    tile_velocidad : "res/rayo.png",
     recolectable : "res/animacion_cofre.png",
 };
 

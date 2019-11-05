@@ -25,6 +25,7 @@ class GameLayer extends Layer {
         this.bloques = [];
         this.tilesDestruiblesDisparo = [];
         this.recolectable = [];
+        this.tilesVelocidad = [];
 
 
         this.fondoPuntos =
@@ -238,14 +239,6 @@ class GameLayer extends Layer {
 
     }
 
-    crearRecolectables(){
-        for(var x=0; x<3; x++) {
-            var recolectables = new ItemRecolectable(this.enemigos[j].x*x,this.enemigos[j].y*x);
-            this.espacio.agregarCuerpoDinamico(recolectables);
-            this.recolectable.push(recolectables);
-        }
-    }
-
     calcularScroll(){
         // limite izquierda
         if ( this.jugador.x > 480 * 0.3) {
@@ -288,6 +281,10 @@ class GameLayer extends Layer {
 
         for (var i=0; i < this.tilesDestruiblesDisparo.length; i++){
             this.tilesDestruiblesDisparo[i].dibujar(this.scrollX);
+        }
+
+        for (var i=0; i < this.tilesVelocidad.length; i++){
+            this.tilesVelocidad[i].dibujar(this.scrollX);
         }
 
         for (var i=0; i < this.recolectable.length; i++){
@@ -410,6 +407,13 @@ class GameLayer extends Layer {
                 // modificación para empezar a contar desde el suelo
                 this.tilesDestruiblesDisparo.push(tileDestruible);
                 this.espacio.agregarCuerpoEstatico(tileDestruible);
+                break;
+            case "V":
+                var tileVelocidad = new TilesDestruibles(imagenes.tile_velocidad,x,y);
+                tileVelocidad.y = tileVelocidad.y - tileVelocidad.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.tilesVelocidad.push(tileVelocidad);
+                this.espacio.agregarCuerpoEstatico(tileVelocidad);
                 break;
             case "E":
                 var enemigo = new Enemigo(x,y);
