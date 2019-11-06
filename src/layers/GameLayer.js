@@ -22,6 +22,7 @@ class GameLayer extends Layer {
         this.disparosJugador = [];
         this.disparosEnemigo = []
         this.enemigos = [];
+        this.noEnemigos = [];
         this.bloques = [];
         this.tilesDestruiblesDisparo = [];
         this.recolectable = [];
@@ -85,6 +86,10 @@ class GameLayer extends Layer {
             this.enemigos[i].actualizar();
         }
 
+        for (var i=0; i < this.noEnemigos.length; i++){
+            this.noEnemigos[i].actualizar();
+        }
+
         for (var i=0; i < this.disparosJugador.length; i++) {
             this.disparosJugador[i].actualizar();
         }
@@ -105,6 +110,18 @@ class GameLayer extends Layer {
             }
         }
 
+        // No enemigos muertos fuera del juego
+        for (var j=0; j < this.noEnemigos.length; j++){
+            if ( this.noEnemigos[j] != null &&
+                this.noEnemigos[j].estadoNoEnemigo == estados.muerto  ) {
+
+                this.espacio
+                    .eliminarCuerpoDinamico(this.noEnemigos[j]);
+                this.noEnemigos.splice(j, 1);
+                j = j-1;
+            }
+        }
+
         // A partir de aquí solo hago colisiones
         // colisiones
 
@@ -112,6 +129,17 @@ class GameLayer extends Layer {
         for (var i=0; i < this.enemigos.length; i++){
             if ( this.jugador.colisiona(this.enemigos[i])){
                 this.jugador.golpeado();
+                this.vida.valor = this.jugador.vidas;
+                if (this.jugador.vidas <= 0){
+                    this.iniciar();
+                }
+            }
+        }
+
+        //colisiones, jugador - noenemigo
+        for (var i=0; i < this.noEnemigos.length; i++){
+            if ( this.jugador.colisiona(this.noEnemigos[i])){
+                this.jugador.reducirVida();
                 this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
                     this.iniciar();
@@ -139,6 +167,28 @@ class GameLayer extends Layer {
                         this.recolectable.push(recolectables);
                     }
                     this.puntos.valor++;
+
+                }
+            }
+        }
+
+        // colisiones , disparoJugador - noEnemigo
+        for (var i=0; i < this.disparosJugador.length; i++){
+            for (var j=0; j < this.noEnemigos.length; j++){
+                if (this.disparosJugador[i] != null &&
+                    this.noEnemigos[j] != null &&
+                    this.disparosJugador[i].colisiona(this.noEnemigos[j])) {
+
+                    this.espacio
+                        .eliminarCuerpoDinamico(this.disparosJugador[i]);
+                    this.disparosJugador.splice(i, 1);
+                    i = i-1;
+                    this.noEnemigos[j].impactadoNoEnemigo();
+                    this.jugador.reducirVida();
+                    this.vida.valor = this.jugador.vidas;
+                    if (this.jugador.vidas <= 0){
+                        this.iniciar();
+                    }
 
                 }
             }
@@ -227,8 +277,6 @@ class GameLayer extends Layer {
                 this.tilesVelocidad.splice(i, 1);
                 i = i-1;
                 this.jugador.mejorarVelocidad();
-                console.log(this.jugador.vx);
-                console.log(this.jugador.vy);
             }
         }
 
@@ -299,6 +347,10 @@ class GameLayer extends Layer {
         this.jugador.dibujar(this.scrollX);
         for (var i=0; i < this.enemigos.length; i++){
             this.enemigos[i].dibujar(this.scrollX);
+        }
+
+        for (var i=0; i < this.noEnemigos.length; i++){
+            this.noEnemigos[i].dibujar(this.scrollX);
         }
 
         for (var i=0; i < this.tilesDestruiblesDisparo.length; i++){
@@ -467,17 +519,26 @@ class GameLayer extends Layer {
                 this.tilesVidas.push(tileVida);
                 this.espacio.agregarCuerpoDinamico(tileVida);
                 break;
+            case "F":
+                var barcoNoEnemigo = new BarcoNoEnemigo(x,y);
+                barcoNoEnemigo.y = barcoNoEnemigo.y - barcoNoEnemigo.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.noEnemigos.push(barcoNoEnemigo);
+                this.espacio.agregarCuerpoDinamico(barcoNoEnemigo);
+                break;
             case "E":
                 var enemigo = new Enemigo(x,y);
                 enemigo.y = enemigo.y - enemigo.alto/2;
                 // modificación para empezar a contar desde el suelo
                 this.enemigos.push(enemigo);
                 this.espacio.agregarCuerpoDinamico(enemigo);
+                break;
             case "1":
                 this.jugador = new Jugador(x, y);
                 // modificación para empezar a contar desde el suelo
                 this.jugador.y = this.jugador.y - this.jugador.alto/2;
                 this.espacio.agregarCuerpoDinamico(this.jugador);
+                break;
 
         }
     }

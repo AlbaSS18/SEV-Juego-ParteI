@@ -167,6 +167,12 @@ class Jugador extends Modelo {
         }
     }
 
+    reducirVida(){
+        if (this.vidas > 0) {
+            this.vidas--;
+        }
+    }
+
     mejorarVelocidad(){
         if(this.tiempoMejorVelocidad <= 0){
             this.tiempoMejorVelocidad = 100;
