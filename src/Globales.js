@@ -12,7 +12,7 @@ tipoPulsacion.mantener = 2;
 
 
 var nivelActual = 0;
-var nivelMaximo = 2;
+var nivelMaximo = 3;
 
 var estados = {};
 estados.moviendo= 2; // Incluye parado, derecha , izquierda

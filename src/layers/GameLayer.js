@@ -28,7 +28,8 @@ class GameLayer extends Layer {
         this.recolectable = [];
         this.tilesVelocidad = [];
         this.tilesVidas = [];
-
+        this.recolectablesCogidos = 0;
+        this.tiempo = 1000;
 
         this.fondoPuntos =
             new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
@@ -36,9 +37,12 @@ class GameLayer extends Layer {
             new Fondo(imagenes.icono_recolectable, 480*0.65,320*0.06);
         this.fondoVida =
             new Fondo(imagenes.tile_vida, 480*0.45,320*0.05);
+        this.fondoTiempo =
+            new Fondo(imagenes.tile_tiempo, 480*0.20,320*0.05);
         this.puntos = new Texto(0,480*0.9,320*0.07 );
         this.puntosRecolectables = new Texto(0,480*0.7,320*0.07 );
         this.vida = new Texto(3,480*0.5,320*0.07 );
+        this.tiempoTexto = new Texto(1000,480*0.25,320*0.07 );
 
         this.cargarMapa("res/"+nivelActual+".txt");
 
@@ -49,6 +53,28 @@ class GameLayer extends Layer {
         if (this.pausa){
             return;
         }
+
+        if (this.tiempo <= 0){
+            if(this.recolectablesCogidos > 0){
+                nivelActual++;
+                if (nivelActual > nivelMaximo){
+                    nivelActual = 0;
+                }
+                this.pausa = true;
+                this.mensaje =
+                    new Boton(imagenes.mensaje_ganar, 480/2, 320/2);
+                this.iniciar();
+            }
+            else{
+                this.pausa = true;
+                this.mensaje =
+                    new Boton(imagenes.mensaje_perder, 480/2, 320/2);
+                this.iniciar();
+            }
+        }
+
+        this.tiempo--;
+        this.tiempoTexto.valor--;
 
         this.espacio.actualizar();
 
@@ -165,6 +191,7 @@ class GameLayer extends Layer {
                         var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
                         this.espacio.agregarCuerpoDinamico(recolectables);
                         this.recolectable.push(recolectables);
+                        this.recolectablesCogidos++;
                     }
                     this.puntos.valor++;
 
@@ -377,6 +404,8 @@ class GameLayer extends Layer {
         this.puntosRecolectables.dibujar();
         this.fondoVida.dibujar();
         this.vida.dibujar();
+        this.fondoTiempo.dibujar();
+        this.tiempoTexto.dibujar();
         if ( !this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
             this.botonSalto.dibujar();

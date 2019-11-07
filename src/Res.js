@@ -4,10 +4,10 @@ var imagenes = {
     barco_dos_vidas: "res/barco_jugador_dos_vidas.png",
     barco_tres_vidas: "res/barco_jugador_tres_vidas.png",
     fondo_3: "res/fondo.png",
-    mensaje_como_jugar : "res/mensaje_como_jugar.png",
+    mensaje_como_jugar : "res/como_jugar.png",
     boton_disparo : "res/boton_disparo.png",
     boton_salto : "res/boton_salto.png",
-    menu_fondo : "res/menu_fondo.png",
+    menu_fondo : "res/portada.png",
     boton_jugar : "res/boton_jugar.png",
     enemigo : "res/enemigo.png",
     no_enemigo : "res/no_enemigo.png",
@@ -17,7 +17,7 @@ var imagenes = {
     bloque_tierra : "res/bloque_tierra.png",
     bloque_tierra_combinada: "res/imageCombinada_reducida.png",
     bloque_tierra_combinada_2: "res/imagenTierraCombinada_2.png",
-    bloque_tierra_combinada_3: "res/imagenTierraCombinada_3.png",
+    bloque_tierra_combinada_3: "res/imagenTierraCombinada_4.png",
     disparo_jugador: "res/cannonBall.png",
     disparo_enemigo: "res/bala.png",
     jugador: "res/jugador.png",
@@ -31,7 +31,10 @@ var imagenes = {
     tile_destruible : "res/bomba.png",
     tile_vida : "res/vida.png",
     tile_velocidad : "res/rayo.png",
+    tile_tiempo : "res/reloj.png",
     recolectable : "res/animacion_cofre.png",
+    mensaje_ganar : "res/mensaje_ganar.png",
+    mensaje_perder : "res/mensaje_perder.png",
 };
 
 
