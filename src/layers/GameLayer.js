@@ -11,9 +11,9 @@ class GameLayer extends Layer {
         this.espacio = new Espacio(0);
 
         this.botonSalto = new Boton(imagenes.boton_salto,480*0.9,320*0.55);
-        this.botonDisparo = new Boton(imagenes.boton_disparo,480*0.75,320*0.83);
+        this.botonDisparo = new Boton(imagenes.boton_disparo,480*0.5,320*0.90);
 
-        this.pad = new Pad(480*0.14,320*0.8);
+        this.pad = new Pad(480*0.14,320*0.9);
 
         this.scrollX = 0;
 
@@ -258,6 +258,19 @@ class GameLayer extends Layer {
                         .eliminarCuerpoDinamico(this.disparosEnemigo[i]);
                     this.disparosEnemigo.splice(i, 1);
                     i = i-1;
+                }
+            }
+        }
+
+        // colisiones , enemigo - bloque
+        for (var i=0; i < this.enemigos.length; i++){
+            for (var j=0; j < this.bloques.length; j++){
+                if (this.enemigos[i] != null &&
+                    this.bloques[j] != null &&
+                    this.enemigos[i].colisiona(this.bloques[j])) {
+
+                    this.enemigos[i].vx = this.enemigos[i].devolverVelocidadX();
+                    this.enemigos[i].vy = this.enemigos[i].devolverVelocidadY();
                 }
             }
         }
@@ -589,6 +602,7 @@ class GameLayer extends Layer {
             }
             if (this.pad.contienePunto(pulsaciones[i].x , pulsaciones[i].y) ){
                 var orientacionX = this.pad.obtenerOrientacionX(pulsaciones[i].x);
+                console.log(orientacionX);
                 if ( orientacionX > 20) { // de 0 a 20 no contabilizamos
                     controles.moverX = orientacionX;
                 }
