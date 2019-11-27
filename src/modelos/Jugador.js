@@ -87,8 +87,6 @@ class Jugador extends Modelo {
                 break;
         }
 
-
-
         // Tiempo Disparo
         if ( this.tiempoDisparo > 0 ) {
             this.tiempoDisparo--;
@@ -122,6 +120,7 @@ class Jugador extends Modelo {
         if ( this.tiempoDisparo == 0) {
             // reiniciar Cadencia
             this.tiempoDisparo = this.cadenciaDisparo;
+            reproducirEfecto(efectos.cannon);
             var disparos = [];
 
             var disparo = this.crearDisparo(new DisparoJugador(this.x, this.y));

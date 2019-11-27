@@ -2,6 +2,7 @@ class GameLayer extends Layer {
 
     constructor() {
         super();
+        reproducirMusica();
         this.mensaje = new Boton(imagenes.mensaje_como_jugar, 480/2, 320/2);
         this.pausa = true;
         this.iniciar();
@@ -58,17 +59,20 @@ class GameLayer extends Layer {
             if(this.recolectablesCogidos > 0){
                 nivelActual++;
                 if (nivelActual > nivelMaximo){
+                    reproducirEfecto(efectos.nivel_final);
                     nivelActual = 0;
                 }
                 this.pausa = true;
                 this.mensaje =
                     new Boton(imagenes.mensaje_ganar, 480/2, 320/2);
+                reproducirEfecto(efectos.ganar);
                 this.iniciar();
             }
             else{
                 this.pausa = true;
                 this.mensaje =
                     new Boton(imagenes.mensaje_perder, 480/2, 320/2);
+                reproducirEfecto(efectos.perder);
                 this.iniciar();
             }
         }
@@ -176,25 +180,27 @@ class GameLayer extends Layer {
         // colisiones , disparoJugador - Enemigo
         for (var i=0; i < this.disparosJugador.length; i++){
             for (var j=0; j < this.enemigos.length; j++){
-                if (this.disparosJugador[i] != null &&
-                    this.enemigos[j] != null &&
-                    this.disparosJugador[i].colisiona(this.enemigos[j])) {
+                for(var k=0; k < this.disparosEnemigo.length; k++){
+                    if (this.disparosJugador[i] != null &&
+                        this.enemigos[j] != null &&
+                        this.disparosJugador[i].colisiona(this.enemigos[j])) {
 
-                    this.espacio
-                        .eliminarCuerpoDinamico(this.disparosJugador[i]);
-                    this.disparosJugador.splice(i, 1);
-                    i = i-1;
-                    var enemigo = this.enemigos[j];
-                    this.enemigos[j].impactado();
+                        this.espacio
+                            .eliminarCuerpoDinamico(this.disparosJugador[i]);
+                        this.disparosJugador.splice(i, 1);
+                        i = i-1;
+                        var enemigo = this.enemigos[j];
+                        this.enemigos[j].impactado();
 
-                    for(var x=0; x<3; x++) {
-                        var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
-                        this.espacio.agregarCuerpoDinamico(recolectables);
-                        this.recolectable.push(recolectables);
-                        this.recolectablesCogidos++;
+                        for(var x=0; x<3; x++) {
+                            var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
+                            this.espacio.agregarCuerpoDinamico(recolectables);
+                            this.recolectable.push(recolectables);
+                            this.recolectablesCogidos++;
+                        }
+                        this.puntos.valor++;
+
                     }
-                    this.puntos.valor++;
-
                 }
             }
         }
