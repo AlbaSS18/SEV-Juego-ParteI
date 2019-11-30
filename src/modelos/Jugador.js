@@ -158,6 +158,10 @@ class Jugador extends Modelo {
             // reiniciar Cadencia
             this.tiempoDisparoSerpiente = this.cadenciaDisparoSerpiente;
             var disparoSerpiente = new Serpiente(this.x, this.y);
+            if ( this.orientacion == orientaciones.izquierda ){
+                disparoSerpiente.orientacion = orientaciones.izquierda;
+                disparoSerpiente.vx = disparoSerpiente.vx*-1; //invertir
+            }
             return disparoSerpiente;
 
         } else {

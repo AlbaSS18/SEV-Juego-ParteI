@@ -35,7 +35,8 @@ var imagenes = {
     recolectable : "res/animacion_cofre.png",
     mensaje_ganar : "res/mensaje_ganar.png",
     mensaje_perder : "res/mensaje_perder.png",
-    serpiente : "res/Serpiente.png",
+    serpiente_derecha : "res/serpiente_derecha.png",
+    serpiente_izquierda : "res/serpiente_izquierda.png",
 };
 
 

@@ -6,15 +6,26 @@ class Serpiente extends Modelo {
         this.vy = 0;
         this.vx = 0;
 
+        this.orientacion = orientaciones.derecha;
+
         // Animaciones
-        this.aMoverSerpiente = new Animacion(imagenes.serpiente ,
+        this.aIdleDerecha = new Animacion(imagenes.serpiente_derecha ,
             this.ancho, this.alto, 6, 3);
-        this.animacion = this.aMoverSerpiente;
+        this.aIdleIzquierda = new Animacion(imagenes.serpiente_izquierda,
+            this.ancho, this.alto, 6, 3);
+        this.animacion = this.aIdleDerecha;
     }
 
     actualizar (){
         // Actualizar animación
         this.animacion.actualizar();
+
+        if (this.orientacion == orientaciones.derecha) {
+            this.animacion = this.aIdleDerecha;
+        }
+        if (this.orientacion == orientaciones.izquierda) {
+            this.animacion = this.aIdleIzquierda;
+        }
     }
 
     dibujar (scrollX){
