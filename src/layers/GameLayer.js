@@ -28,8 +28,9 @@ class GameLayer extends Layer {
         this.recolectable = [];
         this.tilesVelocidad = [];
         this.tilesVidas = [];
+        this.serpientes = [];
         this.recolectablesCogidos = 0;
-        this.tiempo = 1000;
+        this.tiempo = 900;
 
         this.fondoPuntos =
             new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
@@ -42,7 +43,7 @@ class GameLayer extends Layer {
         this.puntos = new Texto(0,480*0.9,320*0.07 );
         this.puntosRecolectables = new Texto(0,480*0.7,320*0.07 );
         this.vida = new Texto(3,480*0.5,320*0.07 );
-        this.tiempoTexto = new Texto(1000,480*0.25,320*0.07 );
+        this.tiempoTexto = new Texto(900,480*0.25,320*0.07 );
 
         this.cargarMapa("res/"+nivelActual+".txt");
 
@@ -123,6 +124,10 @@ class GameLayer extends Layer {
             this.disparosJugador[i].actualizar();
         }
 
+        for (var i=0; i < this.serpientes.length; i++) {
+            this.serpientes[i].actualizar();
+        }
+
         for (var i=0; i < this.recolectable.length; i++) {
             this.recolectable[i].actualizar();
         }
@@ -160,6 +165,7 @@ class GameLayer extends Layer {
                 this.jugador.golpeado();
                 this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
+                    reproducirEfecto(efectos.perder);
                     this.iniciar();
                 }
             }
@@ -192,13 +198,7 @@ class GameLayer extends Layer {
                         var enemigo = this.enemigos[j];
                         this.enemigos[j].impactado();
                         reproducirEfecto(efectos.enemigo_muere);
-
-                        for(var x=0; x<3; x++) {
-                            var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
-                            this.espacio.agregarCuerpoDinamico(recolectables);
-                            this.recolectable.push(recolectables);
-                            this.recolectablesCogidos++;
-                        }
+                        this.cogerRecolectables(enemigo);
                         this.puntos.valor++;
 
                     }
@@ -221,6 +221,7 @@ class GameLayer extends Layer {
                     this.jugador.reducirVida();
                     this.vida.valor = this.jugador.vidas;
                     if (this.jugador.vidas <= 0){
+                        reproducirEfecto(efectos.perder);
                         this.iniciar();
                     }
 
@@ -234,6 +235,8 @@ class GameLayer extends Layer {
                 this.espacio.eliminarCuerpoDinamico(this.recolectable[i]);
                 this.recolectable.splice(i, 1);
                 i = i-1;
+                reproducirEfecto(efectos.coger_recolectable);
+                this.recolectablesCogidos++;
                 this.puntosRecolectables.valor++;
             }
         }
@@ -309,8 +312,10 @@ class GameLayer extends Layer {
                 this.tilesDestruiblesDisparo.splice(i, 1);
                 i = i-1;
                 this.jugador.golpeado();
+                reproducirEfecto(efectos.tileDestruibleDisparo);
                 this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
+                    reproducirEfecto(efectos.perder);
                     this.iniciar();
                 }
             }
@@ -334,6 +339,7 @@ class GameLayer extends Layer {
                     .eliminarCuerpoDinamico(this.tilesVidas[i]);
                 this.tilesVidas.splice(i, 1);
                 i = i-1;
+                reproducirEfecto(efectos.coger_recolectable);
                 this.jugador.aumentarVida();
                 this.vida.valor = this.jugador.vidas;
             }
@@ -349,7 +355,29 @@ class GameLayer extends Layer {
                 this.jugador.golpeado();
                 this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
+                    reproducirEfecto(efectos.perder);
                     this.iniciar();
+                }
+            }
+        }
+
+        // colisiones , enemigo - serpiente
+        for (var i=0; i < this.serpientes.length; i++){
+            for (var j=0; j < this.enemigos.length; j++){
+                if (this.serpientes[i] != null &&
+                    this.enemigos[j] != null &&
+                    this.serpientes[i].colisiona(this.enemigos[j])) {
+
+                    this.espacio
+                        .eliminarCuerpoDinamico(this.serpientes[i]);
+                    this.serpientes.splice(i, 1);
+                    i = i-1;
+
+                    var enemigo = this.enemigos[j];
+                    this.enemigos[j].impactado();
+                    reproducirEfecto(efectos.enemigo_muere);
+                    this.cogerRecolectables(enemigo);
+                    this.puntos.valor++;
                 }
             }
         }
@@ -385,6 +413,10 @@ class GameLayer extends Layer {
 
         for (var i=0; i < this.disparosJugador.length; i++) {
             this.disparosJugador[i].dibujar(this.scrollX);
+        }
+
+        for (var i=0; i < this.serpientes.length; i++){
+            this.serpientes[i].dibujar(this.scrollX);
         }
 
         for (var i=0; i < this.disparosEnemigo.length; i++) {
@@ -437,6 +469,14 @@ class GameLayer extends Layer {
 
     }
 
+    cogerRecolectables(enemigo){
+        for(var x=0; x<3; x++) {
+            var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
+            this.espacio.agregarCuerpoDinamico(recolectables);
+            this.recolectable.push(recolectables);
+        }
+    }
+
     procesarControles( ){
         if (controles.continuar){
             controles.continuar = false;
@@ -453,6 +493,16 @@ class GameLayer extends Layer {
                         this.disparosJugador.push(nuevoDisparo);
                     }
                 }
+            }
+        }
+        // disparar
+        if (  controles.disparoSerpiente ){
+            console.log(34);
+            var serpiente = this.jugador.dejarSerpiente();
+            if ( serpiente != null ) {
+                this.espacio.agregarCuerpoDinamico(serpiente);
+                this.serpientes.push(serpiente);
+                reproducirEfecto(efectos.serpiente);
             }
         }
 

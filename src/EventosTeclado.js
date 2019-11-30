@@ -14,6 +14,10 @@ function onKeyDown( event) {
                 controles.disparo = true;
                 controles.continuar = true;
                 break;
+            case 83:
+                controles.disparoSerpiente = true;
+                controles.continuar = true;
+                break;
             case 38:
                 controles.moverY = 1;
                 break;
@@ -40,6 +44,10 @@ function onKeyUp( event) {
     switch ( event.keyCode ){
         case 32:
             controles.disparo = false;
+            controles.continuar = false;
+            break;
+        case 83:
+            controles.disparoSerpiente = false;
             controles.continuar = false;
             break;
         case 38:

@@ -8,6 +8,9 @@ var efectos = {
     ganar: "res/win.mp3",
     perder: "res/lose.mp3",
     enemigo_muere: "res/Torpedo+Explosion.mp3",
+    coger_recolectable: "res/cogerRecolectable.mp3",
+    tileDestruibleDisparo: "res/colision_tileDestruibleDisparo.mp3",
+    serpiente: "res/snake.mp3",
 }
 
 function reproducirMusica() {
