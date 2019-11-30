@@ -7,6 +7,7 @@ var efectos = {
     nivel_final: "res/goal.mp3",
     ganar: "res/win.mp3",
     perder: "res/lose.mp3",
+    enemigo_muere: "res/Torpedo+Explosion.mp3",
 }
 
 function reproducirMusica() {

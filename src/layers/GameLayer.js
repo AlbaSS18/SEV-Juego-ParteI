@@ -11,7 +11,6 @@ class GameLayer extends Layer {
     iniciar() {
         this.espacio = new Espacio(0);
 
-        this.botonSalto = new Boton(imagenes.boton_salto,480*0.9,320*0.55);
         this.botonDisparo = new Boton(imagenes.boton_disparo,480*0.5,320*0.90);
 
         this.pad = new Pad(480*0.14,320*0.9);
@@ -172,6 +171,7 @@ class GameLayer extends Layer {
                 this.jugador.reducirVida();
                 this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
+                    reproducirEfecto(efectos.perder);
                     this.iniciar();
                 }
             }
@@ -191,6 +191,7 @@ class GameLayer extends Layer {
                         i = i-1;
                         var enemigo = this.enemigos[j];
                         this.enemigos[j].impactado();
+                        reproducirEfecto(efectos.enemigo_muere);
 
                         for(var x=0; x<3; x++) {
                             var recolectables = new ItemRecolectable(enemigo.x+(x*20),enemigo.y+(x*10));
@@ -427,7 +428,6 @@ class GameLayer extends Layer {
         this.tiempoTexto.dibujar();
         if ( !this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
-            this.botonSalto.dibujar();
             this.pad.dibujar();
         }
 
@@ -467,9 +467,9 @@ class GameLayer extends Layer {
 
         // Eje Y
         if ( controles.moverY > 0 ){
-            this.cambiarVelocidadY(4,1);
-        } else if ( controles.moverY < 0 ){
             this.cambiarVelocidadY(-4,-1);
+        } else if ( controles.moverY < 0 ){
+            this.cambiarVelocidadY(4,1);
         } else {
             this.cambiarVelocidadY(0,0);
         }
@@ -594,26 +594,41 @@ class GameLayer extends Layer {
     calcularPulsaciones(pulsaciones){
         // Suponemos botones no estan pulsados
         this.botonDisparo.pulsado = false;
-        this.botonSalto.pulsado = false;
         // suponemos que el pad está sin tocar
         controles.moverX = 0;
+        controles.moverY = 0;
 
         // Suponemos a false
         controles.continuar = false;
 
         for(var i=0; i < pulsaciones.length; i++){
+            console.log(controles.moverY);
             // MUY SIMPLE SIN BOTON cualquier click en pantalla lo activa
             if(pulsaciones[i].tipo == tipoPulsacion.inicio){
                 controles.continuar = true;
             }
             if (this.pad.contienePunto(pulsaciones[i].x , pulsaciones[i].y) ){
                 var orientacionX = this.pad.obtenerOrientacionX(pulsaciones[i].x);
-                console.log(orientacionX);
-                if ( orientacionX > 20) { // de 0 a 20 no contabilizamos
-                    controles.moverX = orientacionX;
+                var orientacionY = this.pad.obtenerOrientacionY(pulsaciones[i].y);
+                if ( orientacionX > 20 && orientacionX < 50) { // de 0 a 20 no contabilizamos
+                    if(orientacionY < 20 && orientacionY > -20 ){
+                        controles.moverX = orientacionX;
+                    }
                 }
-                if ( orientacionX < -20) { // de -20 a 0 no contabilizamos
-                    controles.moverX = orientacionX;
+                if ( orientacionX < -20 && orientacionX > -50) { // de -20 a 0 no contabilizamos
+                    if(orientacionY < 20 && orientacionY > -20 ){
+                        controles.moverX = orientacionX;
+                    }
+                }
+                if ( orientacionY > 20) { // de -20 a 0 no contabilizamos
+                    if(orientacionX < 20 && orientacionX > -20 ){
+                        controles.moverY = -orientacionY;
+                    }
+                }
+                if ( orientacionY < -20) { // de -20 a 0 no contabilizamos
+                    if(orientacionX < 20 && orientacionX > -20 ){
+                        controles.moverY = -orientacionY;
+                    }
                 }
             }
 
@@ -624,23 +639,11 @@ class GameLayer extends Layer {
                 }
             }
 
-            if (this.botonSalto.contienePunto(pulsaciones[i].x , pulsaciones[i].y) ){
-                this.botonSalto.pulsado = true;
-                if ( pulsaciones[i].tipo == tipoPulsacion.inicio) {
-                    controles.moverY = 1;
-                }
-            }
-
         }
 
         // No pulsado - Boton Disparo
         if ( !this.botonDisparo.pulsado ){
             controles.disparo = false;
-        }
-
-        // No pulsado - Boton Salto
-        if ( !this.botonSalto.pulsado ){
-            controles.moverY = 0;
         }
     }
 
