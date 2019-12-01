@@ -14,11 +14,17 @@ class Enemigo extends Modelo {
         this.tiempoDisparo = 0;
 
         // Animaciones
-        this.aMover = new Animacion(imagenes.enemigo_movimiento,
+        this.aMoverIzquierda = new Animacion(imagenes.enemigo_movimiento_izquierda,
             this.ancho, this.alto, 6, 3);
         this.aMorir = new Animacion(imagenes.enemigo_morir,
           this.ancho,this.alto,6,3, this.finAnimacionMorir.bind(this));
-        this.animacion = this.aMover;
+        this.animacion = this.aMoverIzquierda;
+        this.aMoverDerecha = new Animacion(imagenes.enemigo_movimiento_derecha,
+            this.ancho, this.alto, 6, 3);
+        this.aMoverAbajo = new Animacion(imagenes.enemigo_movimiento_abajo,
+            this.ancho, this.alto, 6, 3);
+        this.aMoverArriba = new Animacion(imagenes.enemigo_movimiento_arriba,
+            this.ancho, this.alto, 6, 3);
     }
 
     devolverVelocidadX(){
@@ -70,15 +76,6 @@ class Enemigo extends Modelo {
         // Actualizar animación
         this.animacion.actualizar();
 
-        switch (this.estado){
-            case estados.moviendo:
-                this.animacion = this.aMover;
-                break;
-            case estados.muriendo:
-                this.animacion = this.aMorir;
-                break;
-        }
-
         if ( this.estado == estados.muriendo) {
             this.vx = 0;
         } else {
@@ -88,17 +85,75 @@ class Enemigo extends Modelo {
             if(this.x - this.ancho/2 <= 0){
               this.vx = this.devolverVelocidadX();
               this.vy = this.devolverVelocidadY();
+              if(this.vy == 0 && this.vx == 0 && this.vy == this.vx){
+                  this.vx = 1;
+              }
             }
 
             if(this.y - this.alto/2 <= 0){
                this.vx = this.devolverVelocidadX();
                this.vy = this.devolverVelocidadY();
+               if(this.vy == 0 && this.vx == 0 && this.vy == this.vx){
+                   this.vy = 1;
+               }
             }
 
             if(this.y + this.alto/2 >= 320){
                 this.vx = this.devolverVelocidadX();
                 this.vy = this.devolverVelocidadY();
+                if(this.vy == 0 && this.vx == 0 && this.vy == this.vx){
+                    this.vy = -1;
+                }
             }
+        }
+
+        // Establecer orientación
+        if ( this.vx > 0 ){
+            this.orientacion = orientaciones.derecha;
+        }
+        if ( this.vx < 0 ){
+            this.orientacion = orientaciones.izquierda;
+        }
+
+        if ( this.vy < 0 ){
+            this.orientacion = orientaciones.arriba;
+        }
+
+        if ( this.vy > 0 ){
+            this.orientacion = orientaciones.abajo;
+        }
+
+        switch (this.estado){
+            case estados.disparando:
+                //this.animacion = this.aMoverIzquierda;
+                if ( this.vx != 0 ) {
+                    if (this.orientacion == orientaciones.derecha) {
+                        this.animacion = this.aMoverDerecha;
+                    }
+                    if (this.orientacion == orientaciones.izquierda) {
+                        this.animacion = this.aMoverIzquierda;
+                    }
+                }
+                if ( this.vx == 0){
+                    if (this.orientacion == orientaciones.derecha) {
+                        this.animacion = this.aMoverDerecha;
+                    }
+                    if (this.orientacion == orientaciones.izquierda) {
+                        this.animacion = this.aMoverIzquierda;
+                    }
+                }
+                if ( this.vy != 0){
+                    if (this.orientacion == orientaciones.arriba) {
+                        this.animacion = this.aMoverArriba;
+                    }
+                    if (this.orientacion == orientaciones.abajo) {
+                        this.animacion = this.aMoverAbajo;
+                    }
+                }
+                break;
+            case estados.muriendo:
+                this.animacion = this.aMorir;
+                break;
         }
 
         // Tiempo Disparo

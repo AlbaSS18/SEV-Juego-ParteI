@@ -30,7 +30,7 @@ class GameLayer extends Layer {
         this.tilesVidas = [];
         this.serpientes = [];
         this.recolectablesCogidos = 0;
-        this.tiempo = 900;
+        this.tiempo = 1000;
 
         this.fondoPuntos =
             new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
@@ -43,7 +43,7 @@ class GameLayer extends Layer {
         this.puntos = new Texto(0,480*0.9,320*0.07 );
         this.puntosRecolectables = new Texto(0,480*0.7,320*0.07 );
         this.vida = new Texto(3,480*0.5,320*0.07 );
-        this.tiempoTexto = new Texto(900,480*0.25,320*0.07 );
+        this.tiempoTexto = new Texto(1000,480*0.25,320*0.07 );
 
         this.cargarMapa("res/"+nivelActual+".txt");
 
@@ -591,6 +591,13 @@ class GameLayer extends Layer {
                 break;
             case "8":
                 var tierra = new Bloque(imagenes.bloque_tierra_combinada_3, x,y);
+                tierra.y = tierra.y - tierra.alto/2;
+                // modificación para empezar a contar desde el suelo
+                this.bloques.push(tierra);
+                this.espacio.agregarCuerpoEstatico(tierra);
+                break;
+            case "9":
+                var tierra = new Bloque(imagenes.bloque_tierra_combinada_5, x,y);
                 tierra.y = tierra.y - tierra.alto/2;
                 // modificación para empezar a contar desde el suelo
                 this.bloques.push(tierra);
