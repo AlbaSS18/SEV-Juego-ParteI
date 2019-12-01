@@ -175,9 +175,32 @@ class Enemigo extends Modelo {
             var disparos = [];
 
             var disparoDerecha = new DisparoEnemigoDerecha(this.x, this.y);
-            disparos.push(disparoDerecha);
             var disparoIzquierda = new DisparoEnemigoIzquierda(this.x, this.y);
+
+            if (this.orientacion == orientaciones.arriba) {
+                disparoDerecha.vx = 9;
+                disparoIzquierda.vx = -9;
+                disparoDerecha.vy = 0;
+                disparoIzquierda.vy = 0;
+            }
+            if (this.orientacion == orientaciones.abajo) {
+                disparoDerecha.vx = -9;
+                disparoIzquierda.vx = 9;
+                disparoDerecha.vy = 0;
+                disparoIzquierda.vy = 0;
+            }
+            if (this.orientacion == orientaciones.izquierda) {
+                disparoDerecha.vy = 9;
+                disparoIzquierda.vy = -9;
+            }
+            if (this.orientacion == orientaciones.derecha) {
+                disparoDerecha.vy = -9;
+                disparoIzquierda.vy = 9;
+            }
+
+            disparos.push(disparoDerecha);
             disparos.push(disparoIzquierda);
+
             return disparos;
         } else {
             return null;

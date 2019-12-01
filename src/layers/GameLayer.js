@@ -370,6 +370,7 @@ class GameLayer extends Layer {
                         .eliminarCuerpoDinamico(this.serpientes[i]);
                     this.serpientes.splice(i, 1);
                     i = i-1;
+                    this.jugador.numeroSerpiente++;
 
                     var enemigo = this.enemigos[j];
                     enemigo.reducirVida();
@@ -698,7 +699,7 @@ class GameLayer extends Layer {
                 }
             }
 
-            if (this.botonserpiente.contienePunto(pulsaciones[i].x , pulsaciones[i].y) ){
+            if (this.botonserpiente.contienePunto(pulsaciones[i].x , pulsaciones[i].y) && this.jugador.numeroSerpiente>0){
                 this.botonserpiente.pulsado = true;
                 if ( pulsaciones[i].tipo == tipoPulsacion.inicio) {
                     controles.disparoSerpiente = true;

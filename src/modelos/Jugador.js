@@ -16,6 +16,7 @@ class Jugador extends Modelo {
         // Disparo serpiente
         this.cadenciaDisparoSerpiente = 30;
         this.tiempoDisparoSerpiente = 0;
+        this.numeroSerpiente = 5;
 
         // Animaciones
         this.aIdleDerecha = new Animacion(imagenes.jugador_moviendo_derecha,
@@ -154,7 +155,7 @@ class Jugador extends Modelo {
     }
 
     dejarSerpiente(){
-        if ( this.tiempoDisparoSerpiente == 0) {
+        if ( this.tiempoDisparoSerpiente == 0 && this.numeroSerpiente > 0) {
             // reiniciar Cadencia
             this.tiempoDisparoSerpiente = this.cadenciaDisparoSerpiente;
             var disparoSerpiente = new Serpiente(this.x, this.y);
@@ -162,6 +163,7 @@ class Jugador extends Modelo {
                 disparoSerpiente.orientacion = orientaciones.izquierda;
                 disparoSerpiente.vx = disparoSerpiente.vx*-1; //invertir
             }
+            this.numeroSerpiente--;
             return disparoSerpiente;
 
         } else {
