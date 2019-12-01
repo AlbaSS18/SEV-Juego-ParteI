@@ -41,6 +41,7 @@ var imagenes = {
     mensaje_perder : "res/mensaje_perder.png",
     serpiente_derecha : "res/serpiente_derecha.png",
     serpiente_izquierda : "res/serpiente_izquierda.png",
+    boton_dejar_serpiente : "res/boton_serpiente_reducido.png",
 };
 
 

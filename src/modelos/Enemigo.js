@@ -3,6 +3,7 @@ class Enemigo extends Modelo {
     constructor(x, y) {
         super(imagenes.enemigo, x, y);
         this.estado = estados.moviendo;
+        this.vida = 3;
 
         this.vy = this.devolverVelocidadY();
         this.vx = this.devolverVelocidadX();
@@ -25,6 +26,12 @@ class Enemigo extends Modelo {
             this.ancho, this.alto, 6, 3);
         this.aMoverArriba = new Animacion(imagenes.enemigo_movimiento_arriba,
             this.ancho, this.alto, 6, 3);
+    }
+
+    reducirVida(){
+        if (this.vida > 0) {
+            this.vida--;
+        }
     }
 
     devolverVelocidadX(){
@@ -124,8 +131,7 @@ class Enemigo extends Modelo {
         }
 
         switch (this.estado){
-            case estados.disparando:
-                //this.animacion = this.aMoverIzquierda;
+            case ( estados.moviendo):
                 if ( this.vx != 0 ) {
                     if (this.orientacion == orientaciones.derecha) {
                         this.animacion = this.aMoverDerecha;
@@ -165,7 +171,6 @@ class Enemigo extends Modelo {
     disparar(){
         if ( this.tiempoDisparo == 0) {
             // reiniciar Cadencia
-            this.estado = estados.disparando;
             this.tiempoDisparo = this.cadenciaDisparo;
             var disparos = [];
 

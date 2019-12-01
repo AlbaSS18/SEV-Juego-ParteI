@@ -12,6 +12,7 @@ class GameLayer extends Layer {
         this.espacio = new Espacio(0);
 
         this.botonDisparo = new Boton(imagenes.boton_disparo,480*0.5,320*0.90);
+        this.botonserpiente = new Boton(imagenes.boton_dejar_serpiente,480*0.6,320*0.90);
 
         this.pad = new Pad(480*0.14,320*0.9);
 
@@ -174,7 +175,7 @@ class GameLayer extends Layer {
         //colisiones, jugador - noenemigo
         for (var i=0; i < this.noEnemigos.length; i++){
             if ( this.jugador.colisiona(this.noEnemigos[i])){
-                this.jugador.reducirVida();
+                this.jugador.golpeado();
                 this.vida.valor = this.jugador.vidas;
                 if (this.jugador.vidas <= 0){
                     reproducirEfecto(efectos.perder);
@@ -186,7 +187,6 @@ class GameLayer extends Layer {
         // colisiones , disparoJugador - Enemigo
         for (var i=0; i < this.disparosJugador.length; i++){
             for (var j=0; j < this.enemigos.length; j++){
-                for(var k=0; k < this.disparosEnemigo.length; k++){
                     if (this.disparosJugador[i] != null &&
                         this.enemigos[j] != null &&
                         this.disparosJugador[i].colisiona(this.enemigos[j])) {
@@ -200,9 +200,7 @@ class GameLayer extends Layer {
                         reproducirEfecto(efectos.enemigo_muere);
                         this.cogerRecolectables(enemigo);
                         this.puntos.valor++;
-
                     }
-                }
             }
         }
 
@@ -374,14 +372,16 @@ class GameLayer extends Layer {
                     i = i-1;
 
                     var enemigo = this.enemigos[j];
-                    this.enemigos[j].impactado();
-                    reproducirEfecto(efectos.enemigo_muere);
-                    this.cogerRecolectables(enemigo);
-                    this.puntos.valor++;
+                    enemigo.reducirVida();
+                    if(enemigo.vida <= 0){
+                        this.enemigos[j].impactado();
+                        reproducirEfecto(efectos.enemigo_muere);
+                        this.cogerRecolectables(enemigo);
+                        this.puntos.valor++;
+                    }
                 }
             }
         }
-
     }
 
     calcularScroll(){
@@ -460,6 +460,7 @@ class GameLayer extends Layer {
         this.tiempoTexto.dibujar();
         if ( !this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
+            this.botonserpiente.dibujar();
             this.pad.dibujar();
         }
 
@@ -576,32 +577,32 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoEstatico(tierra);
                 break;
             case "6":
-                var tierra = new Bloque(imagenes.bloque_tierra_combinada, x,y);
-                tierra.y = tierra.y - tierra.alto/2;
+                var tierra1 = new Bloque(imagenes.bloque_tierra_combinada, x,y);
+                tierra1.y = tierra1.y - tierra1.alto/2;
                 // modificación para empezar a contar desde el suelo
-                this.bloques.push(tierra);
-                this.espacio.agregarCuerpoEstatico(tierra);
+                this.bloques.push(tierra1);
+                this.espacio.agregarCuerpoEstatico(tierra1);
                 break;
             case "7":
-                var tierra = new Bloque(imagenes.bloque_tierra_combinada_2, x,y);
-                tierra.y = tierra.y - tierra.alto/2;
+                var tierra2 = new Bloque(imagenes.bloque_tierra_combinada_2, x,y);
+                tierra2.y = tierra2.y - tierra2.alto/2;
                 // modificación para empezar a contar desde el suelo
-                this.bloques.push(tierra);
-                this.espacio.agregarCuerpoEstatico(tierra);
+                this.bloques.push(tierra2);
+                this.espacio.agregarCuerpoEstatico(tierra2);
                 break;
             case "8":
-                var tierra = new Bloque(imagenes.bloque_tierra_combinada_3, x,y);
-                tierra.y = tierra.y - tierra.alto/2;
+                var tierra3 = new Bloque(imagenes.bloque_tierra_combinada_3, x,y);
+                tierra3.y = tierra3.y - tierra3.alto/2;
                 // modificación para empezar a contar desde el suelo
-                this.bloques.push(tierra);
-                this.espacio.agregarCuerpoEstatico(tierra);
+                this.bloques.push(tierra3);
+                this.espacio.agregarCuerpoEstatico(tierra3);
                 break;
             case "9":
-                var tierra = new Bloque(imagenes.bloque_tierra_combinada_5, x,y);
-                tierra.y = tierra.y - tierra.alto/2;
+                var tierra5 = new Bloque(imagenes.bloque_tierra_combinada_5, x,y);
+                tierra5.y = tierra5.y - tierra5.alto/2;
                 // modificación para empezar a contar desde el suelo
-                this.bloques.push(tierra);
-                this.espacio.agregarCuerpoEstatico(tierra);
+                this.bloques.push(tierra5);
+                this.espacio.agregarCuerpoEstatico(tierra5);
                 break;
             case "U":
                 var tileDestruible = new TilesDestruibles(imagenes.tile_destruible,x,y);
@@ -651,6 +652,7 @@ class GameLayer extends Layer {
     calcularPulsaciones(pulsaciones){
         // Suponemos botones no estan pulsados
         this.botonDisparo.pulsado = false;
+        this.botonserpiente.pulsado = false;
         // suponemos que el pad está sin tocar
         controles.moverX = 0;
         controles.moverY = 0;
@@ -696,11 +698,23 @@ class GameLayer extends Layer {
                 }
             }
 
+            if (this.botonserpiente.contienePunto(pulsaciones[i].x , pulsaciones[i].y) ){
+                this.botonserpiente.pulsado = true;
+                if ( pulsaciones[i].tipo == tipoPulsacion.inicio) {
+                    controles.disparoSerpiente = true;
+                }
+            }
+
         }
 
         // No pulsado - Boton Disparo
         if ( !this.botonDisparo.pulsado ){
             controles.disparo = false;
+        }
+
+        // No pulsado - Boton Disparo
+        if ( !this.botonserpiente.pulsado ){
+            controles.disparoSerpiente = false;
         }
     }
 
