@@ -165,6 +165,7 @@ class GameLayer extends Layer {
             if ( this.jugador.colisiona(this.enemigos[i])){
                 this.jugador.golpeado();
                 this.vida.valor = this.jugador.vidas;
+                console.log(this.espacio.estaticos);
                 if (this.jugador.vidas <= 0){
                     reproducirEfecto(efectos.perder);
                     this.iniciar();
@@ -295,7 +296,7 @@ class GameLayer extends Layer {
                     this.disparosJugador.splice(i, 1);
                     i = i-1;
                     this.espacio
-                        .eliminarCuerpoEstatico(this.tilesDestruiblesDisparo[j]);
+                        .eliminarCuerpoDinamico(this.tilesDestruiblesDisparo[j]);
                     this.tilesDestruiblesDisparo.splice(j, 1);
                     j = j-1;
                 }
@@ -347,7 +348,7 @@ class GameLayer extends Layer {
         for (var i=0; i < this.disparosEnemigo.length; i++){
             if ( this.jugador.colisiona(this.disparosEnemigo[i])){
                 this.espacio
-                    .eliminarCuerpoEstatico(this.disparosEnemigo[i]);
+                    .eliminarCuerpoDinamico(this.disparosEnemigo[i]);
                 this.disparosEnemigo.splice(i, 1);
                 i = i-1;
                 this.jugador.golpeado();
@@ -577,13 +578,6 @@ class GameLayer extends Layer {
                 this.bloques.push(tierra);
                 this.espacio.agregarCuerpoEstatico(tierra);
                 break;
-            case "6":
-                var tierra1 = new Bloque(imagenes.bloque_tierra_combinada, x,y);
-                tierra1.y = tierra1.y - tierra1.alto/2;
-                // modificación para empezar a contar desde el suelo
-                this.bloques.push(tierra1);
-                this.espacio.agregarCuerpoEstatico(tierra1);
-                break;
             case "7":
                 var tierra2 = new Bloque(imagenes.bloque_tierra_combinada_2, x,y);
                 tierra2.y = tierra2.y - tierra2.alto/2;
@@ -599,7 +593,7 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoEstatico(tierra3);
                 break;
             case "9":
-                var tierra5 = new Bloque(imagenes.bloque_tierra_combinada_5, x,y);
+                var tierra5 = new Bloque(imagenes.bloque_tierra_combinada_4, x,y);
                 tierra5.y = tierra5.y - tierra5.alto/2;
                 // modificación para empezar a contar desde el suelo
                 this.bloques.push(tierra5);
